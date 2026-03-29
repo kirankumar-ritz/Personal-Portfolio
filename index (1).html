@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kiran Kumar C S — Finance, Systems & Technology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a08;
+    --bg2: #111110;
+    --bg3: #1a1a17;
+    --surface: #1e1e1a;
+    --border: #2a2a25;
+    --border2: #333330;
+    --text: #e8e6df;
+    --text2: #9c9a8e;
+    --text3: #5c5a50;
+    --accent: #c8b96e;
+    --accent2: #8fb89a;
+    --accent3: #e07a5f;
+    --accent4: #7bafd4;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Instrument Sans', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* ── GRID LINES ── */
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10, 10, 8, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 160px 0 100px;
+    position: relative;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards 0.1s;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  .hero-name {
+    font-family: var(--serif);
+    font-size: clamp(52px, 8vw, 96px);
+    line-height: 1.0;
+    color: var(--text);
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.2s;
+  }
+
+  .hero-name em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.1;
+    color: var(--text2);
+    margin-bottom: 40px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.3s;
+  }
+
+  .hero-philosophy {
+    max-width: 600px;
+    font-size: 16px;
+    color: var(--text2);
+    line-height: 1.8;
+    border-left: 2px solid var(--accent);
+    padding-left: 24px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.4s;
+  }
+
+  .hero-philosophy strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s ease forwards 0.5s;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    background: transparent;
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--border2);
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-ghost:hover { color: var(--text); border-color: var(--text2); }
+
+  /* ── FLOATING STAT CARD ── */
+  .hero-stats {
+    position: absolute;
+    right: 0;
+    top: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeIn 1s ease forwards 0.8s;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 24px;
+    min-width: 180px;
+    text-align: right;
+  }
+
+  .stat-number {
+    font-family: var(--serif);
+    font-size: 32px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border2), transparent);
+    margin: 0;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── ABOUT ── */
+  .about {
+    padding: 100px 0;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .about-heading {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4vw, 52px);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 24px;
+  }
+
+  .about-heading em {
+    font-style: italic;
+    color: var(--accent2);
+  }
+
+  .about-body {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.9;
+    margin-bottom: 16px;
+  }
+
+  .about-body strong { color: var(--text); font-weight: 600; }
+
+  .focus-list {
+    list-style: none;
+    margin-top: 32px;
+  }
+
+  .focus-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+    color: var(--text2);
+    transition: color 0.2s;
+  }
+
+  .focus-list li:hover { color: var(--text); }
+
+  .focus-list li:last-child { border-bottom: none; }
+
+  .focus-icon {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent);
+    background: rgba(200,185,110,0.08);
+    padding: 4px 8px;
+    margin-top: 2px;
+    flex-shrink: 0;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── DOMAINS ── */
+  .domains {
+    padding: 80px 0;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .domains-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .domain-card {
+    background: var(--bg2);
+    padding: 36px 32px;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .domain-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-accent, var(--accent));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+  }
+
+  .domain-card:hover { background: var(--surface); }
+  .domain-card:hover::before { transform: scaleX(1); }
+
+  .domain-number {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.15em;
+    margin-bottom: 20px;
+  }
+
+  .domain-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .domain-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ── PROJECTS ── */
+  .projects {
+    padding: 100px 0;
+  }
+
+  .projects-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 56px;
+  }
+
+  .projects-heading {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4vw, 52px);
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .projects-heading em {
+    font-style: italic;
+    color: var(--accent3);
+  }
+
+  .view-all {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+    white-space: nowrap;
+    margin-bottom: 6px;
+  }
+
+  .view-all:hover { color: var(--accent); }
+
+  .project-card {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    gap: 32px;
+    align-items: start;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--border);
+    text-decoration: none;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .project-card:first-of-type { border-top: 1px solid var(--border); }
+
+  .project-card:hover .project-num { color: var(--accent); }
+  .project-card:hover .project-title { color: var(--accent); }
+
+  .project-num {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text3);
+    padding-top: 4px;
+    transition: color 0.2s;
+  }
+
+  .project-body { }
+
+  .project-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.2;
+    transition: color 0.2s;
+  }
+
+  .project-desc {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    max-width: 560px;
+    margin-bottom: 16px;
+  }
+
+  .project-tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    padding: 4px 10px;
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tag.finance { border-color: rgba(200,185,110,0.3); color: var(--accent); background: rgba(200,185,110,0.05); }
+  .tag.ai { border-color: rgba(123,175,212,0.3); color: var(--accent4); background: rgba(123,175,212,0.05); }
+  .tag.startup { border-color: rgba(224,122,95,0.3); color: var(--accent3); background: rgba(224,122,95,0.05); }
+  .tag.analytics { border-color: rgba(143,184,154,0.3); color: var(--accent2); background: rgba(143,184,154,0.05); }
+
+  .project-arrow {
+    font-size: 20px;
+    color: var(--text3);
+    padding-top: 4px;
+    transition: transform 0.2s, color 0.2s;
+  }
+
+  .project-card:hover .project-arrow {
+    transform: translate(4px, -4px);
+    color: var(--accent);
+  }
+
+  /* ── SKILLS ── */
+  .skills {
+    padding: 80px 0;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 48px;
+  }
+
+  .skill-group-title {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .skill-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: var(--text2);
+  }
+
+  .skill-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--text3);
+    flex-shrink: 0;
+  }
+
+  .skill-dot.strong { background: var(--accent); }
+  .skill-dot.medium { background: var(--accent2); }
+  .skill-dot.growing { background: var(--accent4); }
+
+  /* ── WRITING / LINKEDIN ── */
+  .writing {
+    padding: 100px 0;
+  }
+
+  .writing-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 56px;
+  }
+
+  .writing-heading {
+    font-family: var(--serif);
+    font-size: clamp(36px, 4vw, 52px);
+    color: var(--text);
+    line-height: 1.1;
+  }
+
+  .writing-heading em {
+    font-style: italic;
+    color: var(--accent4);
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .post-card {
+    background: var(--bg);
+    padding: 36px 32px;
+    text-decoration: none;
+    transition: background 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .post-card:hover { background: var(--surface); }
+
+  .post-theme {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .post-theme.finance { color: var(--accent); }
+  .post-theme.ai { color: var(--accent4); }
+  .post-theme.startup { color: var(--accent3); }
+  .post-theme.markets { color: var(--accent2); }
+
+  .post-title {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .post-hook {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    font-style: italic;
+  }
+
+  .post-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+    margin-top: auto;
+  }
+
+  /* ── CONNECT ── */
+  .connect {
+    padding: 100px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .connect::before {
+    content: 'CONNECT';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--serif);
+    font-size: clamp(80px, 15vw, 200px);
+    color: var(--border);
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0.4;
+    letter-spacing: 0.1em;
+  }
+
+  .connect-inner { position: relative; z-index: 1; }
+
+  .connect-heading {
+    font-family: var(--serif);
+    font-size: clamp(36px, 5vw, 64px);
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .connect-heading em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .connect-sub {
+    font-size: 15px;
+    color: var(--text2);
+    max-width: 480px;
+    margin: 0 auto 40px;
+    line-height: 1.8;
+  }
+
+  .connect-links {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .connect-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .connect-link:hover {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--text3);
+  }
+
+  .connect-link.primary {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  .connect-link.primary:hover {
+    background: var(--text);
+    border-color: var(--text);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-left {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-left span { color: var(--accent); }
+
+  .footer-right {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── CURSOR DOT ── */
+  .cursor {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.15s ease;
+    mix-blend-mode: difference;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    .hero-stats { display: none; }
+    .domains-grid { grid-template-columns: repeat(2, 1fr); }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
+    .posts-grid { grid-template-columns: 1fr; }
+    .project-card { grid-template-columns: 48px 1fr; }
+    .project-arrow { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 0 20px; }
+    .nav-inner { padding: 0 20px; }
+    .footer-inner { padding: 0 20px; flex-direction: column; gap: 8px; text-align: center; }
+    .domains-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .nav-links { display: none; }
+    .hero { padding: 120px 0 80px; }
+    .projects-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .writing-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="cursor" id="cursor"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">KK — Portfolio</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#writing">Writing</a></li>
+      <li><a href="#connect">Connect</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-tag">Bengaluru, India · Open to Opportunities</div>
+    <h1 class="hero-name">Kiran <em>Kumar</em></h1>
+    <h2 class="hero-title">C S</h2>
+    <p class="hero-philosophy">
+      Behind every market, business & institution —<br>
+      <strong>there's a system most people never examine.</strong><br>
+      That's what I work on. Finance · AI · Startups · Technology · India.
+    </p>
+    <div class="hero-ctas">
+      <a href="#projects" class="btn-primary">View Projects →</a>
+      <a href="https://www.linkedin.com/in/kirankumar-c-s" target="_blank" class="btn-ghost">LinkedIn ↗</a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-card">
+        <div class="stat-number">6.4K</div>
+        <div class="stat-label">Post Impressions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1.1K</div>
+        <div class="stat-label">Followers</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">500+</div>
+        <div class="stat-label">Connections</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="section-label">About</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="about-heading reveal">The layer<br><em>beneath</em><br>the headline.</h2>
+        <p class="about-body reveal">Most business content tells you <strong>what happened</strong>. I focus on explaining why — and who it actually benefits.</p>
+        <p class="about-body reveal">My work sits at the intersection of corporate finance, business analytics, AI, and Indian market dynamics. I'm not interested in surface trends. I follow the incentive structures, capital flows, and system design choices that determine outcomes.</p>
+        <p class="about-body reveal">MBA in Finance & Business Analytics. Currently building at the intersection of analytical rigour and real-world application — across markets, startups, and emerging technology.</p>
+      </div>
+      <div>
+        <ul class="focus-list reveal">
+          <li>
+            <span class="focus-icon">01</span>
+            <span>How capital is <strong>actually allocated</strong> vs how it's supposed to be — in companies, markets, and personal finance</span>
+          </li>
+          <li>
+            <span class="focus-icon">02</span>
+            <span>Why Indian businesses and markets <strong>behave differently</strong> from Western frameworks — and what that means for strategy</span>
+          </li>
+          <li>
+            <span class="focus-icon">03</span>
+            <span>Where AI and automation are <strong>quietly restructuring</strong> entire professional functions, not just individual tasks</span>
+          </li>
+          <li>
+            <span class="focus-icon">04</span>
+            <span>The systems behind <strong>economic development, startups, and institutional design</strong> that most people don't examine closely enough</span>
+          </li>
+          <li>
+            <span class="focus-icon">05</span>
+            <span>Building financial models, analytical tools, and <strong>decision frameworks</strong> that work in the real world</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section class="domains">
+  <div class="container">
+    <div class="section-label">Domains of Work</div>
+    <div class="domains-grid">
+      <div class="domain-card reveal" style="--card-accent: var(--accent);">
+        <div class="domain-number">Domain / 01</div>
+        <h3 class="domain-title">Corporate Finance & Valuation</h3>
+        <p class="domain-desc">DCF modelling, comparable company analysis, LBO structures, and capital allocation frameworks. Building models that reflect business reality, not just spreadsheet elegance.</p>
+      </div>
+      <div class="domain-card reveal" style="--card-accent: var(--accent4);">
+        <div class="domain-number">Domain / 02</div>
+        <h3 class="domain-title">AI & Automation in Finance</h3>
+        <p class="domain-desc">Where intelligent systems are restructuring financial workflows — from automated modelling to AI-assisted deal analysis. Separating signal from hype.</p>
+      </div>
+      <div class="domain-card reveal" style="--card-accent: var(--accent3);">
+        <div class="domain-number">Domain / 03</div>
+        <h3 class="domain-title">Startup Economics & VC</h3>
+        <p class="domain-desc">Unit economics, funding cycles, valuation inflation, and the gap between narrative and numbers in the Indian startup ecosystem.</p>
+      </div>
+      <div class="domain-card reveal" style="--card-accent: var(--accent2);">
+        <div class="domain-number">Domain / 04</div>
+        <h3 class="domain-title">Business Analytics</h3>
+        <p class="domain-desc">Data-driven decision frameworks, financial dashboards, and analytical tools built for real-world business problems — not academic exercises.</p>
+      </div>
+      <div class="domain-card reveal" style="--card-accent: var(--accent);">
+        <div class="domain-number">Domain / 05</div>
+        <h3 class="domain-title">Indian Markets & Policy</h3>
+        <p class="domain-desc">The structural dynamics of Indian capital markets, regulatory design, retail investing behaviour, and what Western frameworks miss about Bharat.</p>
+      </div>
+      <div class="domain-card reveal" style="--card-accent: var(--accent4);">
+        <div class="domain-number">Domain / 06</div>
+        <h3 class="domain-title">Systems & Institutions</h3>
+        <p class="domain-desc">How economic institutions, labour systems, and public policy actually function — and the incentive structures that determine whether they serve their stated purpose.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects" id="projects">
+  <div class="container">
+    <div class="projects-header reveal">
+      <h2 class="projects-heading">Selected<br><em>Work</em></h2>
+      <a href="https://github.com/kirankumar-ritz/kiran-project-portfolio" target="_blank" class="view-all">View all on GitHub ↗</a>
+    </div>
+
+    <a href="https://github.com/kirankumar-ritz/kiran-project-portfolio" target="_blank" class="project-card reveal">
+      <div class="project-num">01</div>
+      <div class="project-body">
+        <h3 class="project-title">AI-Generated Investment Banking Valuation Model</h3>
+        <p class="project-desc">A complete institutional-grade IB valuation model built with AI — covering DCF, comparable company analysis, precedent transactions, and LBO. IC verdict: BUY at ₹1,950–2,150 Cr EV. Demonstrated AI's capability as a deal-execution tool, not just a productivity layer.</p>
+        <div class="project-tags">
+          <span class="tag finance">Valuation</span>
+          <span class="tag ai">AI</span>
+          <span class="tag finance">LBO</span>
+          <span class="tag finance">DCF</span>
+          <span class="tag startup">Investment Banking</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </a>
+
+    <a href="https://github.com/kirankumar-ritz/kiran-project-portfolio" target="_blank" class="project-card reveal">
+      <div class="project-num">02</div>
+      <div class="project-body">
+        <h3 class="project-title">Indian Unicorn Origin Study — Pattern Recognition Model</h3>
+        <p class="project-desc">A systematic analysis of 10 Indian unicorn origin stories to identify the single most consistent pattern before product-market fit. Spoiler: it wasn't execution. Built as a research framework for early-stage startup evaluation.</p>
+        <div class="project-tags">
+          <span class="tag startup">Startups</span>
+          <span class="tag analytics">Research</span>
+          <span class="tag startup">VC</span>
+          <span class="tag analytics">India</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </a>
+
+    <a href="https://github.com/kirankumar-ritz/kiran-project-portfolio" target="_blank" class="project-card reveal">
+      <div class="project-num">03</div>
+      <div class="project-body">
+        <h3 class="project-title">Mutual Fund Cost Impact Calculator</h3>
+        <p class="project-desc">A data tool quantifying the real rupee impact of expense ratios over 20-year investment horizons — making the hidden cost of active fund management visible and personally tangible for Indian retail investors.</p>
+        <div class="project-tags">
+          <span class="tag finance">Personal Finance</span>
+          <span class="tag analytics">Data</span>
+          <span class="tag finance">Indian Markets</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </a>
+
+    <a href="https://github.com/kirankumar-ritz/kiran-project-portfolio" target="_blank" class="project-card reveal">
+      <div class="project-num">04</div>
+      <div class="project-body">
+        <h3 class="project-title">Business Analytics & Decision Frameworks</h3>
+        <p class="project-desc">A collection of analytical frameworks, financial models, and decision support tools built across domains — from startup unit economics to corporate finance applications. Built for practical use, not academic demonstration.</p>
+        <div class="project-tags">
+          <span class="tag analytics">Analytics</span>
+          <span class="tag finance">Finance</span>
+          <span class="tag ai">Automation</span>
+          <span class="tag analytics">Python</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </a>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="skills">
+  <div class="container">
+    <div class="section-label">Skills & Tools</div>
+    <div class="skills-grid">
+      <div class="reveal">
+        <div class="skill-group-title">Finance</div>
+        <div class="skill-item"><span class="skill-dot strong"></span> Financial Modelling</div>
+        <div class="skill-item"><span class="skill-dot strong"></span> Valuation (DCF, Comps, LBO)</div>
+        <div class="skill-item"><span class="skill-dot strong"></span> Corporate Finance</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Equity Research</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Investment Analysis</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Capital Markets</div>
+      </div>
+      <div class="reveal">
+        <div class="skill-group-title">Analytics</div>
+        <div class="skill-item"><span class="skill-dot strong"></span> Business Analytics</div>
+        <div class="skill-item"><span class="skill-dot strong"></span> Financial Statement Analysis</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Data Analysis</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Market Research</div>
+        <div class="skill-item"><span class="skill-dot growing"></span> Python</div>
+        <div class="skill-item"><span class="skill-dot strong"></span> Excel (Advanced)</div>
+      </div>
+      <div class="reveal">
+        <div class="skill-group-title">Strategy</div>
+        <div class="skill-item"><span class="skill-dot strong"></span> Business Strategy</div>
+        <div class="skill-item"><span class="skill-dot strong"></span> Systems Thinking</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Startup Economics</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Unit Economics</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Decision Frameworks</div>
+        <div class="skill-item"><span class="skill-dot growing"></span> Capital Allocation</div>
+      </div>
+      <div class="reveal">
+        <div class="skill-group-title">Emerging</div>
+        <div class="skill-item"><span class="skill-dot growing"></span> AI in Finance</div>
+        <div class="skill-item"><span class="skill-dot growing"></span> Prompt Engineering</div>
+        <div class="skill-item"><span class="skill-dot growing"></span> Automation Workflows</div>
+        <div class="skill-item"><span class="skill-dot growing"></span> AI-Assisted Modelling</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Quantitative Analysis</div>
+        <div class="skill-item"><span class="skill-dot medium"></span> Risk Analysis</div>
+      </div>
+    </div>
+    <div style="margin-top: 32px; display: flex; gap: 24px; font-family: var(--mono); font-size: 11px; color: var(--text3);">
+      <span><span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-right: 6px;"></span>Core strength</span>
+      <span><span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent2); margin-right: 6px;"></span>Proficient</span>
+      <span><span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent4); margin-right: 6px;"></span>Actively building</span>
+    </div>
+  </div>
+</section>
+
+<!-- WRITING -->
+<section class="writing" id="writing">
+  <div class="container">
+    <div class="writing-header reveal">
+      <h2 class="writing-heading">Thinking<br><em>in public.</em></h2>
+      <a href="https://www.linkedin.com/in/kirankumar-c-s" target="_blank" class="view-all">All posts on LinkedIn ↗</a>
+    </div>
+
+    <div class="posts-grid">
+      <a href="https://www.linkedin.com/in/kirankumar-c-s" target="_blank" class="post-card reveal">
+        <div class="post-theme finance">Finance · Personal</div>
+        <div class="post-title">I scored 92 in Corporate Finance. My savings account was empty at 24.</div>
+        <div class="post-hook">"MBA programs teach you how to allocate capital at scale. But they never teach you how to build your own."</div>
+        <div class="post-meta">18 reactions · Most read</div>
+      </a>
+      <a href="https://www.linkedin.com/in/kirankumar-c-s" target="_blank" class="post-card reveal">
+        <div class="post-theme ai">AI · Finance</div>
+        <div class="post-title">AI won't eliminate finance jobs. It will eliminate roles that are process-heavy and judgment-light.</div>
+        <div class="post-hook">"Automation doesn't reduce the need for thinking. It raises the threshold for who gets paid to think."</div>
+        <div class="post-meta">Systems analysis</div>
+      </a>
+      <a href="https://www.linkedin.com/in/kirankumar-c-s" target="_blank" class="post-card reveal">
+        <div class="post-theme startup">Startup · VC</div>
+        <div class="post-title">Founders obsess over execution. Investors quietly reject ideas before execution even matters.</div>
+        <div class="post-hook">"In early-stage VC pipelines, ~100 ideas get reviewed for every 1 investment. Execution isn't evaluated for 99 of them."</div>
+        <div class="post-meta">Startup economics</div>
+      </a>
+      <a href="https://www.linkedin.com/in/kirankumar-c-s" target="_blank" class="post-card reveal">
+        <div class="post-theme markets">Markets · India</div>
+        <div class="post-title">IPO anchors get 5–10% discounts. Retail investors pay full price. This isn't unfair execution — it's deliberate pricing design.</div>
+        <div class="post-hook">"Retail investors are providing liquidity. Institutions are extracting certainty."</div>
+        <div class="post-meta">Capital markets structure</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section class="connect" id="connect">
+  <div class="container">
+    <div class="connect-inner">
+      <h2 class="connect-heading reveal">Let's<br><em>think together.</em></h2>
+      <p class="connect-sub reveal">If you're working on something at the intersection of finance, startups, AI, or Indian market dynamics — I'd genuinely like to talk.</p>
+      <div class="connect-links reveal">
+        <a href="https://www.linkedin.com/in/kirankumar-c-s" target="_blank" class="connect-link primary">Connect on LinkedIn ↗</a>
+        <a href="https://github.com/kirankumar-ritz/kiran-project-portfolio" target="_blank" class="connect-link">GitHub Portfolio ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <span>Kiran Kumar C S</span> · Bengaluru, India · 2026
+    </div>
+    <div class="footer-right">
+      Finance · AI · Startups · Technology · India
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Cursor
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX - 4 + 'px';
+    cursor.style.top = e.clientY - 4 + 'px';
+  });
+  document.addEventListener('mousedown', () => cursor.style.transform = 'scale(2.5)');
+  document.addEventListener('mouseup', () => cursor.style.transform = 'scale(1)');
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 60);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
